@@ -53,6 +53,15 @@ A receipt does not prove who sent the payment. It does not prove the money is st
 
 Receipts stay verifiable after the money is spent: Tari's public nodes are archival, and the page checks the output by its hash, spent or not.
 
+One privacy limit, stated on the page itself: the page has no server and never receives receipt data, but to check a payment it asks a Tari public node about the output, and that node can see the query.
+
+## How this differs from what exists
+
+- **Monero** wallets can sign a receiver-side proof that a payment arrived, but the proof is bound to the receiver's address: whoever checks it learns which wallet was paid. A PaidSeal receipt names no wallet and no address.
+- **Glasspane** (Zcash, ZecHub Hackathon 3.0) lets a sender prove one shielded payout from a link, checked in a browser against mainnet. It is the sender's proof, and its verifier recovers the recipient's address. PaidSeal is the receiver's proof, and it names nobody.
+- **Billet** (built on Sapling's zcash-delivery-proof library) seals an invoice into a Zcash note so one link works as invoice and receipt, but the payment itself runs on Tempo stablecoins and the link is made by the person asking to be paid.
+- **Seance** (Tari, October 2026 contest) is an explainer on Tari Ootle showing who can read what in one private payment. PaidSeal is not an explainer. It is the working receipt, signed by the receiving wallet on the base layer.
+
 ## What we learned building this (building blocks tested)
 
 - **The mask is never exported, on purpose.** Stock Tari tooling withholds the blinding factor because mask plus script private key would hand over the spend key. The receiver's wallet still recovers the mask when it scans a payment, from the output's sealed data. The generator re-derives it locally from the wallet's own view key export: DH shared secret with the sender offset key, domain-separated key derivation, XChaCha20-Poly1305 opening. Revealing the mask alone is safe. Spending also needs the script key, which needs the master spend key.

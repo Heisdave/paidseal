@@ -2928,7 +2928,7 @@
       $("source-line").textContent = `Checked against the Tari chain using ${NODE_NAME}. ` + (confirmations != null ? `This payment has ${confirmations} confirmations. ` : "") + "If you want more certainty, check a second source.";
       $("verdict").className = "verdict ok";
       $("verdict-title").textContent = "This receipt verifies";
-      $("verdict-detail").textContent = "Every check below passed against the live Tari chain, in your browser. No server held this receipt or saw its contents.";
+      $("verdict-detail").textContent = "Every check below passed against the live Tari chain, in your browser. No PaidSeal server held this receipt: this site has none. Your browser asked a Tari public node for the output, and that node can see the query.";
       $("sections").style.display = "block";
     } catch (e) {
       fail("Could not complete the check", `Something went wrong while checking this receipt against the chain (${e.message}). Check your connection and reload to try again.`);
