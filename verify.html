@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PaidSeal - check a payment receipt</title>
+<style>
+  :root {
+    --bg: #211d16;
+    --smoke: #2e2820;
+    --paper: #f5efe2;
+    --ink: #26221a;
+    --olive: #6b7248;
+    --olive-dark: #4c5233;
+    --line: #d8cfb8;
+    --bad: #a33327;
+    --ok: #476b2d;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 32px 16px 64px;
+    background: radial-gradient(1200px 600px at 50% -10%, #3a3428, var(--bg));
+    color: var(--ink);
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; }
+  header.brand { text-align: center; color: var(--paper); margin-bottom: 22px; }
+  header.brand h1 { margin: 0; font-size: 34px; letter-spacing: 1px; }
+  header.brand p { margin: 6px 0 0; font-style: italic; opacity: .85; }
+  .receipt {
+    background: var(--paper);
+    border-radius: 6px;
+    padding: 28px 30px 30px;
+    box-shadow: 0 18px 50px rgba(0,0,0,.5);
+  }
+  .verdict { border-radius: 6px; padding: 16px 18px; margin-bottom: 20px; border: 2px solid var(--line); }
+  .verdict.ok { border-color: var(--ok); background: #eef3e4; }
+  .verdict.fail { border-color: var(--bad); background: #f7e9e6; }
+  .verdict h2 { margin: 0 0 4px; font-size: 22px; }
+  .verdict p { margin: 0; font-size: 15px; line-height: 1.45; }
+  .step { display: flex; gap: 10px; align-items: baseline; padding: 7px 0; border-bottom: 1px dashed var(--line); font-size: 15px; }
+  .step::before { content: '...'; color: #8a8271; font-weight: bold; width: 22px; }
+  .step.run::before { content: '>'; color: var(--olive-dark); }
+  .step.ok::before { content: '\2713'; color: var(--ok); }
+  .step.bad::before { content: '\2717'; color: var(--bad); }
+  #receipt-body { display: none; }
+  section.block { margin-top: 22px; }
+  section.block h3 {
+    margin: 0 0 8px; font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--olive-dark); border-bottom: 2px solid var(--olive); padding-bottom: 4px;
+  }
+  .kv { display: flex; justify-content: space-between; gap: 16px; padding: 5px 0; font-size: 16px; }
+  .kv b { font-variant-numeric: tabular-nums; text-align: right; }
+  .free { font-size: 16px; line-height: 1.5; white-space: pre-wrap; }
+  .label-note { font-size: 13.5px; font-style: italic; color: #5d5648; margin-top: 6px; line-height: 1.45; }
+  .honesty { margin-top: 26px; background: #efe8d5; border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px; font-size: 14.5px; line-height: 1.55; }
+  .honesty h4 { margin: 12px 0 4px; font-size: 15px; }
+  .honesty h4:first-child { margin-top: 0; }
+  .honesty p { margin: 4px 0; }
+  #source-line { margin-top: 16px; font-size: 13.5px; font-style: italic; color: #5d5648; line-height: 1.5; }
+  footer { text-align: center; color: var(--paper); opacity: .7; font-size: 13.5px; margin-top: 22px; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="brand">
+    <h1>PaidSeal</h1>
+    <p>Prove you got paid. Show nothing else.</p>
+  </header>
+
+  <div class="receipt">
+    <div class="verdict" id="verdict">
+      <h2 id="verdict-title">Checking this receipt...</h2>
+      <p id="verdict-detail">Reading the receipt from this link and checking it against the Tari chain, in your browser.</p>
+    </div>
+
+    <div id="receipt-body">
+      <div class="step" id="step-fetch"><span class="step-text">Fetch the payment output from the chain</span></div>
+      <div class="step" id="step-script"><span class="step-text">Check the key inside the payment output</span></div>
+      <div class="step" id="step-open"><span class="step-text">Open the commitment with the amount and blinding factor</span></div>
+      <div class="step" id="step-sig"><span class="step-text">Verify the receiver signature</span></div>
+
+      <div id="sections" style="display:none">
+        <section class="block">
+          <h3>Chain verified</h3>
+          <div class="kv"><span>Amount</span><b id="amount"></b></div>
+          <div class="kv"><span>Payment landed</span><b id="time"></b></div>
+          <div class="kv"><span>Block height</span><b id="height"></b></div>
+        </section>
+
+        <section class="block">
+          <h3>Payment memo</h3>
+          <div class="free" id="memo"></div>
+          <p class="label-note">This is the memo the receiving wallet opened from this payment's sealed data. It is covered by the receiver's signature below. This page cannot check the memo against the chain directly, so it is shown under the receiver's signature rather than as chain verified.</p>
+        </section>
+
+        <section class="block">
+          <h3>Signed note</h3>
+          <div class="free" id="note"></div>
+          <div class="kv"><span>Issued to</span><b id="issued-to"></b></div>
+          <div class="kv"><span>Issued on</span><b id="issued-on"></b></div>
+        </section>
+      </div>
+
+      <div class="honesty">
+        <h4>What this receipt proves</h4>
+        <p>A payment of exactly this amount arrived in a Tari wallet at the time shown.</p>
+        <p>This receipt was issued by the wallet that received the payment. It cannot be forged or edited by anyone else, and that wallet can only issue receipts for payments that really arrived.</p>
+        <p>The memo shown is the one that wallet opened from this payment, and it is covered by the same signature.</p>
+        <h4>What this receipt does not prove</h4>
+        <p>Who sent the payment. This receipt names no sender.</p>
+        <p>That the money is still in the wallet. It may have been spent since.</p>
+        <p>That the payment was for genuine work. A person can pay themselves from a second wallet and receive a perfectly valid receipt. Treat this receipt as proof that a payment happened, not proof of a job.</p>
+      </div>
+      <p id="source-line"></p>
+    </div>
+  </div>
+
+  <footer>PaidSeal checks receipts in your browser. The receipt data in this link never reaches a server.</footer>
+</div>
+<script src="verify.bundle.js"></script>
+</body>
+</html>
