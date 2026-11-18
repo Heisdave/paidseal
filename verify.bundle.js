@@ -2851,8 +2851,19 @@
     const frac = (v % 1000000n).toString().padStart(6, "0").replace(/0+$/, "");
     return frac ? `${whole}.${frac}` : `${whole}`;
   }
+  var NODE_TIMEOUT_MS = 2e4;
   async function getJson(path) {
-    const res = await fetch(`${NODE_BASE}${path}`);
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), NODE_TIMEOUT_MS);
+    let res;
+    try {
+      res = await fetch(`${NODE_BASE}${path}`, { signal: ctl.signal });
+    } catch (e) {
+      if (e.name === "AbortError") throw new Error("the Tari node did not answer in time");
+      throw e;
+    } finally {
+      clearTimeout(timer);
+    }
     if (!res.ok) throw new Error(`node returned HTTP ${res.status}`);
     return res.json();
   }
