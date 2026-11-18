@@ -58,6 +58,7 @@
   .honesty h4:first-child { margin-top: 0; }
   .honesty p { margin: 4px 0; }
   #source-line { margin-top: 16px; font-size: 13.5px; font-style: italic; color: #5d5648; line-height: 1.5; }
+  .net-badge { display: inline-block; margin-top: 12px; padding: 4px 12px; border: 1px solid var(--olive); border-radius: 999px; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--paper); background: var(--smoke); }
   footer { text-align: center; color: var(--paper); opacity: .7; font-size: 13.5px; margin-top: 22px; font-style: italic; }
 </style>
 </head>
@@ -66,6 +67,7 @@
   <header class="brand">
     <h1>PaidSeal</h1>
     <p>Prove you got paid. Show nothing else.</p>
+    <div class="net-badge">Test network (Esmeralda)</div>
   </header>
 
   <div class="receipt">
@@ -116,7 +118,7 @@
     </div>
   </div>
 
-  <footer>PaidSeal checks receipts in your browser. The receipt data in this link never reaches a server.</footer>
+  <footer>PaidSeal checks receipts in your browser. This site has no server of its own, and the receipt data in this link is never sent to one. To check the payment, the page asks a Tari public node about the output, and that node can see the query.</footer>
 </div>
 <script src="verify.bundle.js"></script>
 </body>
