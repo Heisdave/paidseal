@@ -18,6 +18,8 @@ On a public chain, proof means a transaction link that exposes the wallet and it
 2. The receiver runs the PaidSeal generator beside their wallet. It opens that one output, checks the opening against the chain, signs a receipt covering the amount, the memo, a note, who the receipt is issued to and the issue date, and produces a link.
 3. Anyone with the link opens the verification page. The page fetches the output from Tari's public node, re-checks the proof and the signature in the browser, and shows the result. No Tari wallet is needed to check a receipt, and no server ever holds receipt data: everything travels in the part of the link after the `#`, which browsers never send to a server.
 
+One payment can carry more than one receipt. The receiver can issue a second receipt for the same payment with a different signed note, a client copy and a records copy, for example. The proof is identical. Only the label changes.
+
 The receipt format, the canonical signing form and the error states are specified in [SPEC.md](SPEC.md).
 
 ## Try it

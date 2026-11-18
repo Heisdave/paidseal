@@ -49,6 +49,9 @@
     margin: 0 0 8px; font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
     color: var(--olive-dark); border-bottom: 2px solid var(--olive); padding-bottom: 4px;
   }
+  section.block.note { background: #efe9da; border: 1px dashed var(--line); border-radius: 6px; padding: 12px 14px; }
+  section.block.note h3 { color: #7a7261; border-bottom: 1px solid var(--line); font-size: 12px; }
+  section.block.note .free, section.block.note .kv { font-size: 14.5px; }
   .kv { display: flex; justify-content: space-between; gap: 16px; padding: 5px 0; font-size: 16px; }
   .kv b { font-variant-numeric: tabular-nums; text-align: right; }
   .free { font-size: 16px; line-height: 1.5; white-space: pre-wrap; }
@@ -96,11 +99,12 @@
           <p class="label-note">This is the memo the receiving wallet opened from this payment's sealed data. It is covered by the receiver's signature below. This page cannot check the memo against the chain directly, so it is shown under the receiver's signature rather than as chain verified.</p>
         </section>
 
-        <section class="block">
+        <section class="block note">
           <h3>Signed note</h3>
           <div class="free" id="note"></div>
           <div class="kv"><span>Issued to</span><b id="issued-to"></b></div>
           <div class="kv"><span>Issued on</span><b id="issued-on"></b></div>
+          <p class="label-note">This note is the receiving wallet's own label, covered by its signature, so it cannot be edited after issue. It is not a chain fact. The chain verified block above is the proof.</p>
         </section>
       </div>
 
