@@ -58,9 +58,11 @@ One privacy limit, stated on the page itself: the page has no server and never r
 ## How this differs from what exists
 
 - **Monero** wallets can sign a receiver-side proof that a payment arrived, but the proof is bound to the receiver's address: whoever checks it learns which wallet was paid. A PaidSeal receipt names no wallet and no address.
-- **Glasspane** (Zcash, ZecHub Hackathon 3.0) lets a sender prove one shielded payout from a link, checked in a browser against mainnet. It is the sender's proof, and its verifier recovers the recipient's address. PaidSeal is the receiver's proof, and it names nobody.
-- **Billet** (built on Sapling's zcash-delivery-proof library) seals an invoice into a Zcash note so one link works as invoice and receipt, but the payment itself runs on Tempo stablecoins and the link is made by the person asking to be paid.
-- **Seance** (Tari, October 2026 contest) is an explainer on Tari Ootle showing who can read what in one private payment. PaidSeal is not an explainer. It is the working receipt, signed by the receiving wallet on the base layer.
+- **Glasspane** (Zcash, ZecHub Hackathon 3.0) lets a sender prove one shielded payout from a link, checked in a browser against mainnet. It is the sender's proof, and its verifier recovers the recipient's address. PaidSeal is the receiver's proof, and it names nobody. ([repo](https://github.com/dolepee/glasspane), [ZecHub entry](https://github.com/ZecHub/zechub/tree/main/Hackathon/2026/Glasspane))
+- **Billet** (built on Sapling's zcash-delivery-proof library) seals an invoice into a Zcash note so one link works as invoice and receipt, but the payment itself runs on Tempo stablecoins and the link is made by the person asking to be paid. ([billet.cash](https://billet.cash/))
+- **Seance** (Tari, October 2026 contest) is an explainer on Tari Ootle showing who can read what in one private payment. PaidSeal is not an explainer. It is the working receipt, signed by the receiving wallet on the base layer. ([contest post](https://community.tari.com/t/october-build-contest-thread-spooky-secrets/396/17))
+
+Every comparison above was checked against its source on 2026-11-18; the links are the evidence.
 
 ## What we learned building this (building blocks tested)
 
